@@ -1,421 +1,362 @@
-Voici une **explication claire et progressive de l’adressage IP** (niveau débutant → intermédiaire) que tu peux utiliser directement pour ton tutoriel 👇
+# 🌐 Adressage IP — Guide Complet
+
+> **Niveau :** Débutant → Intermédiaire  
+> **Support :** [Présentation interactive](./presentation/index.html) (Reveal.js)
 
 ---
 
-# 🌐 1. Qu’est-ce qu’une adresse IP ?
+## 📋 Table des matières
 
-Une **adresse IP (Internet Protocol)** est un identifiant unique attribué à chaque appareil connecté à un réseau (ordinateur, téléphone, serveur…).
-
-👉 C’est comme une **adresse postale**, mais pour les machines.
-
-Exemple :
-
-```
-192.168.1.1
-```
-
----
-
-# 🔢 2. Types d’adresses IP
-
-## ✔️ IPv4 (le plus courant)
-
-Format :
-
-```
-x.x.x.x
-```
-
-Chaque nombre va de 0 à 255
-
-Exemple :
-
-```
-192.168.0.10
-```
-
-👉 Total ≈ 4,3 milliards d’adresses
+1. [Qu'est-ce qu'une adresse IP ?](#1-quest-ce-quune-adresse-ip-)
+2. [Structure d'une adresse IPv4](#2-structure-dune-adresse-ipv4)
+3. [Représentation binaire complète](#3-représentation-binaire-complète)
+4. [Masque de sous-réseau & CIDR](#4-masque-de-sous-réseau--cidr)
+5. [Mécanique du masque (opération AND)](#5-mécanique-du-masque--opération-and)
+6. [Table CIDR complète](#6-table-cidr-complète)
+7. [Exemple concret de subnetting](#7-exemple-concret-de-subnetting)
+8. [IPv4 vs IPv6](#8-ipv4-vs-ipv6)
+9. [IP Publique vs IP Privée (RFC 1918)](#9-ip-publique-vs-ip-privée-rfc-1918)
+10. [Adresses spéciales](#10-adresses-spéciales)
+11. [Les classes d'adresses IP](#11-les-classes-dadresses-ip-système-legacy)
+12. [DHCP vs IP Statique](#12-dhcp-vs-ip-statique)
+13. [NAT — Comment Internet fonctionne](#13-nat--comment-internet-fonctionne)
+14. [DNS — Le carnet d'adresses d'Internet](#14-dns--le-carnet-dadresses-dinternet)
+15. [Ports & Services communs](#15-ports--services-communs)
+16. [Commandes essentielles](#16-commandes-essentielles)
 
 ---
 
-## ✔️ IPv6 (plus récent)
+## 1. Qu'est-ce qu'une adresse IP ?
 
-Format long :
+Une **adresse IP (Internet Protocol)** est un identifiant numérique unique attribué à chaque appareil connecté à un réseau (ordinateur, smartphone, imprimante, serveur, caméra IP…).
 
-```
-2001:0db8:85a3:0000:0000:8a2e:0370:7334
-```
+Elle permet de **router les paquets de données** d'un appareil à un autre.
 
-👉 Créé pour remplacer IPv4 (beaucoup plus d’adresses)
+> 💡 **Analogie :** Le réseau est une rue, l'adresse IP est le numéro de porte.
 
----
+Il existe deux versions principales :
 
-# 🧠 3. Structure d’une adresse IP
-
-Une adresse IP est composée de **2 parties** :
-
-```
-[ Réseau ] + [ Hôte ]
-```
-
-Exemple :
-
-```
-192.168.1.25
-```
-
-* 192.168.1 → réseau
-* 25 → machine (hôte)
+| Version | Taille | Exemple |
+|---------|--------|---------|
+| **IPv4** | 32 bits | `192.168.1.10` |
+| **IPv6** | 128 bits | `2001:0db8:85a3::8a2e:0370:7334` |
 
 ---
 
-# 🎭 4. Adresse publique vs privée
+## 2. Structure d'une adresse IPv4
 
-## 🌍 IP publique
-
-* Visible sur Internet
-* Fournie par ton fournisseur (ISP)
-
-## 🏠 IP privée
-
-* Utilisée dans un réseau local (LAN)
-* Non accessible directement depuis Internet
-
-Plages privées :
+Une adresse IPv4 est composée de **4 octets** (4 nombres de 0 à 255) séparés par des points.
 
 ```
-192.168.x.x
-172.16.x.x → 172.31.x.x
-10.x.x.x
+192  .  168  .  1  .  10
+[___réseau_____]   [hôte]
 ```
+
+| Propriété | Valeur |
+|-----------|--------|
+| Nombre de bits | **32** |
+| Nombre d'octets | **4** (groupes de 8 bits) |
+| Adresses possibles | **≈ 4,3 milliards** |
+
+Chaque octet fonctionne en **binaire** en interne, mais s'affiche en décimal pour la lisibilité humaine.
 
 ---
 
-# 🧮 5. Masque de sous-réseau
+## 3. Représentation binaire complète
 
-Le **masque** permet de séparer la partie réseau et hôte.
+Exemple : `192.168.1.10` avec un masque `/24`
 
-Exemple :
+| Octet | Décimal | Binaire | Rôle |
+|-------|---------|---------|------|
+| 1er | **192** | `11000000` | Réseau |
+| 2ème | **168** | `10101000` | Réseau |
+| 3ème | **1** | `00000001` | Réseau |
+| 4ème | **10** | `00001010` | Hôte |
 
 ```
-IP :        192.168.1.10
-Masque :    255.255.255.0
+11000000.10101000.00000001.00001010
+[______24 bits réseau_____][8 bits hôte]
 ```
 
-👉 Cela signifie :
-
-* Réseau : 192.168.1
-* Hôtes possibles : 1 à 254
+> 💡 Chaque bit vaut une puissance de 2 : **128, 64, 32, 16, 8, 4, 2, 1**  
+> Exemple : 192 = 1×128 + 1×64 + 0×32 + 0×16 + 0×8 + 0×4 + 0×2 + 0×1
 
 ---
 
-# 📊 6. CIDR (notation moderne)
+## 4. Masque de sous-réseau & CIDR
 
-Au lieu d’écrire le masque :
-
-```
-255.255.255.0
-```
-
-On écrit :
+Le masque indique **jusqu'où va la partie réseau** dans une adresse IP.
 
 ```
-/24
-```
-
-Exemple :
-
-```
-192.168.1.0/24
-```
-
----
-
-# 🧱 7. Classes d’adresses IP (ancienne méthode)
-
-| Classe | Plage                     | Utilisation    |
-| ------ | ------------------------- | -------------- |
-| A      | 1.0.0.0 → 126.0.0.0       | grands réseaux |
-| B      | 128.0.0.0 → 191.255.0.0   | réseaux moyens |
-| C      | 192.0.0.0 → 223.255.255.0 | petits réseaux |
-
-👉 Aujourd’hui, on utilise surtout CIDR.
-
----
-
-# 🔌 8. Exemple concret (LAN)
-
-Réseau :
-
-```
-192.168.1.0/24
-```
-
-| Appareil | IP           |
-| -------- | ------------ |
-| Routeur  | 192.168.1.1  |
-| PC1      | 192.168.1.10 |
-| PC2      | 192.168.1.20 |
-
----
-
-# ⚙️ 9. DHCP vs IP statique
-
-## 🔄 DHCP (automatique)
-
-* Le routeur attribue l’IP automatiquement
-
-## 🧷 IP statique
-
-* Configurée manuellement
-* Utile pour :
-
-  * serveurs
-  * imprimantes
-
----
-
-# 🧪 10. Commandes utiles (Ubuntu / Windows)
-
-### Voir son IP :
-
-```
-ip a        (Linux)
-ipconfig    (Windows)
-```
-
-### Tester une connexion :
-
-```
-ping google.com
-```
-
----
-
-# 🚨 11. Problèmes fréquents
-
-* Conflit d’IP (2 machines avec la même IP)
-* Mauvais masque
-* Mauvaise passerelle
-
----
-
-# 🧩 12. Résumé rapide
-
-* Une IP = identité d’un appareil
-* IPv4 = format classique
-* Masque = séparation réseau/hôte
-* CIDR = notation moderne
-* IP privée = LAN, IP publique = Internet
-
----
-
------------Voici une explication **claire, progressive et structurée** de l’**adressage IP** pour débutant 👇
-
----
-
-# 🌐 1. Qu’est-ce qu’une adresse IP ?
-
-Une **adresse IP (Internet Protocol)** est un identifiant unique attribué à chaque appareil connecté à un réseau.
-
-👉 C’est comme une **adresse postale** :
-
-* Elle permet d’envoyer et recevoir des données
-* Chaque machine doit avoir une IP unique dans un réseau
-
----
-
-# 🔢 2. Format d’une adresse IPv4
-
-Une adresse IPv4 est composée de **4 nombres (octets)** séparés par des points :
-
-```
-192.168.1.1
-```
-
-Chaque nombre :
-
-* varie de **0 à 255**
-* correspond à **8 bits**
-
-👉 Donc :
-
-* 4 × 8 bits = **32 bits**
-
----
-
-# 🧩 3. Structure : Réseau + Hôte
-
-Une adresse IP est divisée en **2 parties** :
-
-| Partie           | Rôle                 |
-| ---------------- | -------------------- |
-| Réseau (Network) | Identifie le réseau  |
-| Hôte (Host)      | Identifie l’appareil |
-
-👉 Exemple :
-
-```
-192.168.1.10
-```
-
-Avec un masque :
-
-```
-255.255.255.0
-```
-
-* Réseau : `192.168.1`
-* Hôte : `10`
-
----
-
-# 🎭 4. Masque de sous-réseau (Subnet Mask)
-
-Le masque permet de savoir **quelle partie est réseau et quelle partie est hôte**.
-
-### Exemple :
-
-```
-IP : 192.168.1.10
+IP :     192.168.1.10
 Masque : 255.255.255.0
 ```
 
-👉 Cela signifie :
+- **Partie réseau :** `192.168.1`
+- **Partie hôte :** `.10`
 
-* Les 3 premiers nombres = réseau
-* Le dernier = machine
+### Notation CIDR
+
+Au lieu d'écrire le masque en décimal, on utilise `/n` où `n` = nombre de bits réseau.
+
+```
+192.168.1.10/24   →   255.255.255.0   →   254 hôtes
+```
+
+**Formule hôtes :** `2^(32 - préfixe) - 2`  
+*(On soustrait l'adresse réseau et le broadcast)*
 
 ---
 
-# 🧮 5. Notation CIDR
+## 5. Mécanique du masque — Opération AND
 
-Au lieu d’écrire le masque complet, on utilise une notation simplifiée :
+Pour savoir si deux machines sont dans le même réseau, le routeur effectue une opération **ET (AND) bit à bit** entre l'IP et le masque.
 
 ```
-192.168.1.10/24
+IP     : 11000000.10101000.00000001.00001010  (192.168.1.10)
+Masque : 11111111.11111111.11111111.00000000  (255.255.255.0 = /24)
+AND    : 11000000.10101000.00000001.00000000  → 192.168.1.0
 ```
 
-👉 `/24` = 24 bits pour le réseau
+> ⚡ Si deux machines ont le même résultat AND, elles sont **voisines** (même réseau).
 
 ---
 
-# 🏠 6. Types d’adresses IP
+## 6. Table CIDR complète
 
-## 🔹 a) IP privée
+| Préfixe | Masque | Hôtes utilisables | Usage typique |
+|---------|--------|-------------------|---------------|
+| `/8` | 255.0.0.0 | 16 777 214 | Grandes entreprises (Classe A) |
+| `/16` | 255.255.0.0 | 65 534 | Moyennes entreprises (Classe B) |
+| `/24` | 255.255.255.0 | 254 | LAN standard (Classe C) |
+| `/25` | 255.255.255.128 | 126 | Département moyen |
+| `/26` | 255.255.255.192 | 62 | Petit département |
+| `/27` | 255.255.255.224 | 30 | Petite équipe |
+| `/28` | 255.255.255.240 | 14 | Très petit groupe |
+| `/29` | 255.255.255.248 | 6 | Liaison inter-routeurs |
+| `/30` | 255.255.255.252 | 2 | Lien point-à-point |
 
-Utilisées dans les réseaux locaux (LAN)
+---
 
-Plages :
+## 7. Exemple concret de Subnetting
 
-* `192.168.0.0 – 192.168.255.255`
-* `172.16.0.0 – 172.31.255.255`
-* `10.0.0.0 – 10.255.255.255`
+**Scénario :** Une entreprise possède `192.168.1.0/24` et veut le diviser en **4 sous-réseaux**.
 
-👉 Exemple :
+**Solution :** Utiliser un `/26` → 4 sous-réseaux de **62 hôtes** chacun.
+
+| Sous-réseau | Adresse réseau | Plage hôtes | Broadcast |
+|-------------|---------------|-------------|-----------|
+| SR 1 | `192.168.1.0/26` | `.1` → `.62` | `192.168.1.63` |
+| SR 2 | `192.168.1.64/26` | `.65` → `.126` | `192.168.1.127` |
+| SR 3 | `192.168.1.128/26` | `.129` → `.190` | `192.168.1.191` |
+| SR 4 | `192.168.1.192/26` | `.193` → `.254` | `192.168.1.255` |
+
+> ⚠️ **Règle :** Adresse réseau + broadcast = **2 adresses perdues** par sous-réseau → d'où `2ⁿ − 2` hôtes.
+
+---
+
+## 8. IPv4 vs IPv6
+
+| Propriété | IPv4 | IPv6 |
+|-----------|------|------|
+| Taille | 32 bits | 128 bits |
+| Format | Décimal pointé | Hexadécimal |
+| Adresses | ≈ 4,3 milliards | 3,4 × 10³⁸ |
+| Exemple | `192.168.1.1` | `2001:db8::1` |
+| Statut | Le plus utilisé — pénurie depuis ~2011 | Conçu pour remplacer IPv4 |
+| Sécurité | Optionnelle | IPsec intégré |
+
+> 🚀 IPv6 offre assez d'adresses pour attribuer **670 quadrillions** d'IPs par mm² de la Terre !
+
+---
+
+## 9. IP Publique vs IP Privée (RFC 1918)
 
 ```
-192.168.1.5
+PC (192.168.1.10) → Routeur NAT → Internet (82.64.12.45)
+[  réseau privé  ]              [   IP publique    ]
+```
+
+### Plages privées (RFC 1918) — non routables sur Internet
+
+| Plage | Masque typique | Usage |
+|-------|----------------|-------|
+| `10.0.0.0 – 10.255.255.255` | `/8` | Grandes entreprises |
+| `172.16.0.0 – 172.31.255.255` | `/12` | Moyennes entreprises |
+| `192.168.0.0 – 192.168.255.255` | `/16` | Réseaux domestiques / PME |
+
+### IP Publique
+- Attribuée par votre **FAI** (Free, Orange…)
+- Unique sur toute l'internet mondiale
+- Peut changer (IP dynamique FAI)
+
+```bash
+# Trouver son IP publique
+curl ifconfig.me
 ```
 
 ---
 
-## 🌍 b) IP publique
+## 10. Adresses spéciales
 
-* Visible sur Internet
-* Fournie par le FAI
+| Adresse | Nom | Rôle |
+|---------|-----|------|
+| `127.0.0.1` | Loopback | L'ordinateur lui-même ("localhost") |
+| `0.0.0.0` | Wildcard | Toutes les interfaces disponibles |
+| `192.168.1.255` | Broadcast | Message à TOUS les hôtes du réseau |
+| `192.168.1.0` | Adresse réseau | Identifie le réseau (non assignable) |
+| `169.254.x.x` | APIPA | Attribution auto quand le DHCP échoue |
 
-👉 Exemple :
-
-```
-102.x.x.x (Maroc)
-```
-
----
-
-# 🔁 7. Adresse spéciale
-
-| Adresse         | Rôle                 |
-| --------------- | -------------------- |
-| 127.0.0.1       | Loopback (localhost) |
-| 0.0.0.0         | Adresse non définie  |
-| 255.255.255.255 | Broadcast            |
+> 💡 **Astuce :** `ping 127.0.0.1` — si ça répond, votre carte réseau est fonctionnelle, même sans connexion.
 
 ---
 
-# 📡 8. Broadcast et réseau
+## 11. Les classes d'adresses IP (Système Legacy)
 
-Pour :
+> ⚠️ Système dépassé — remplacé par CIDR. Encore enseigné en formation.
 
-```
-192.168.1.0/24
-```
-
-* Adresse réseau : `192.168.1.0`
-* Broadcast : `192.168.1.255`
-* Machines : `192.168.1.1 → 192.168.1.254`
+| Classe | 1er bit | Plage | Hôtes max | Usage |
+|--------|---------|-------|-----------|-------|
+| **A** | `0xxxxxxx` | 1.0.0.0 → 126.x.x.x | 16 millions | Très grands réseaux |
+| **B** | `10xxxxxx` | 128.0.0.0 → 191.x.x.x | 65 534 | Réseaux moyens |
+| **C** | `110xxxxx` | 192.0.0.0 → 223.x.x.x | 254 | Petits réseaux (LAN) |
+| **D** | `1110xxxx` | 224.0.0.0 → 239.x.x.x | — | Multicast |
+| **E** | `1111xxxx` | 240.0.0.0 → 255.x.x.x | — | Réservé (expérimental) |
 
 ---
 
-# 🔌 9. DHCP vs IP statique
+## 12. DHCP vs IP Statique
 
-## DHCP (automatique)
+| | DHCP (dynamique) | IP Statique |
+|-|-----------------|-------------|
+| Configuration | Automatique (routeur) | Manuelle (admin) |
+| Stabilité | IP peut changer | IP fixe et prévisible |
+| Idéal pour | PC, smartphone, tablette | Serveurs, imprimantes, caméras |
 
-* Le routeur donne une IP automatiquement
+```bash
+# Windows — Renouveler son IP DHCP
+ipconfig /release
+ipconfig /renew
+```
 
-## Statique
+```bash
+# Linux — Configurer une IP statique
+ip addr add 192.168.1.10/24 dev eth0
+```
 
-* Configurée manuellement
+> 💡 Un serveur web **doit** avoir une IP statique — sinon les utilisateurs ne pourraient jamais le retrouver !
 
-👉 Exemple Linux :
+---
+
+## 13. NAT — Comment Internet fonctionne
+
+**NAT (Network Address Translation)** est le traducteur entre votre réseau privé et Internet.
 
 ```
+💻 192.168.1.10 ─┐
+📱 192.168.1.11 ──┤── 🔀 Routeur NAT ──── 🌍 82.64.12.45 (1 seule IP !)
+🖨️ 192.168.1.12 ─┘
+[  Réseau local  ]                      [   Internet   ]
+```
+
+> 🎯 Grâce au NAT, **tous vos appareils partagent une seule IP publique**.  
+> C'est pourquoi les IPs privées peuvent se répéter dans des milliers de maisons différentes.
+
+---
+
+## 14. DNS — Le carnet d'adresses d'Internet
+
+**DNS (Domain Name System)** traduit les noms lisibles en adresses IP.
+
+```
+Vous tapez "google.com"
+       ↓
+Serveur DNS cherche...
+       ↓
+Répond : 142.250.74.46
+       ↓
+Votre PC se connecte ✅
+```
+
+### DNS populaires
+
+| Adresse | Fournisseur |
+|---------|-------------|
+| `8.8.8.8` | Google DNS |
+| `1.1.1.1` | Cloudflare DNS |
+| `9.9.9.9` | Quad9 DNS |
+
+> 🧠 Sans DNS, il faudrait mémoriser l'IP de chaque site web.
+
+---
+
+## 15. Ports & Services communs
+
+L'adresse IP trouve la **machine**, mais le port trouve l'**application**.
+
+> 💡 L'IP = adresse de l'immeuble — le port = numéro d'appartement.
+
+| Protocole | Port | Usage |
+|-----------|------|-------|
+| HTTP | `80` | Web non sécurisé |
+| HTTPS | `443` | Web sécurisé (TLS) |
+| DNS | `53` | Résolution de noms |
+| SSH | `22` | Accès distant sécurisé |
+| FTP | `21` | Transfert de fichiers |
+| SMTP | `25` | Envoi d'e-mails |
+
+---
+
+## 16. Commandes essentielles
+
+### 🪟 Windows
+
+```powershell
+# Voir toutes les interfaces réseau
+ipconfig /all
+
+# Tester la connectivité
+ping 8.8.8.8
+
+# Renouveler l'IP DHCP
+ipconfig /release
+ipconfig /renew
+
+# Trouver l'IP publique
+curl ifconfig.me
+```
+
+### 🐧 Linux / macOS
+
+```bash
+# Voir les interfaces réseau
+ip addr show
+# ou
+ifconfig
+
+# Tester la connectivité
+ping -c 4 8.8.8.8
+
+# Voir la table de routage
+ip route show
+
+# Configurer une IP statique
 ip addr add 192.168.1.10/24 dev eth0
 ```
 
 ---
 
-# 🧠 10. Résumé simple
+## 🏁 Résumé — Les essentiels
 
-* IP = identité d’un appareil
-* Masque = découpe réseau/hôte
-* Privée = LAN
-* Publique = Internet
-* DHCP = automatique
-
----
-
-# 💡 Exemple concret (réseau maison)
-
-* Routeur : `192.168.1.1`
-* PC : `192.168.1.10`
-* Téléphone : `192.168.1.15`
-
-👉 Tous dans le même réseau → communication possible
+| Concept | Rôle |
+|---------|------|
+| **IP** | Votre nom sur le réseau |
+| **Masque / CIDR** | Découpe réseau ↔ hôte |
+| **Ports** | Votre porte d'entrée par application |
+| **DNS** | Votre annuaire (nom → IP) |
+| **NAT** | Votre bouclier & partage d'IP publique |
+| **DHCP** | Distribution automatique d'IP |
 
 ---
 
-# 🎯 Pour ton tutoriel (livrable)
-
-Tu peux structurer comme ça :
-
-1. Définition IP
-2. Format IPv4
-3. Masque
-4. CIDR
-5. Types IP
-6. Cas pratique
-7. Commandes (Linux / Windows)
-
----
-
-Si tu veux, je peux :
-
-* te rédiger **le tutoriel complet prêt à rendre**
-* ou te faire **une présentation PowerPoint**
-* ou t’expliquer avec **exercices pratiques (niveau examen)**
-
-
-
-
-
+*Présentation interactive : [`./presentation/index.html`](./presentation/index.html)*
