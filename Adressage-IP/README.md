@@ -1,28 +1,36 @@
 # 🌐 Adressage IP — Guide Complet
 
-> **Niveau :** Débutant → Intermédiaire  
 > **Support :** [Présentation interactive](./presentation/index.html) (Reveal.js)
 
 ---
 
 ## 📋 Table des matières
 
-1. [Qu'est-ce qu'une adresse IP ?](#1-quest-ce-quune-adresse-ip-)
-2. [Structure d'une adresse IPv4](#2-structure-dune-adresse-ipv4)
-3. [Représentation binaire complète](#3-représentation-binaire-complète)
-4. [Masque de sous-réseau & CIDR](#4-masque-de-sous-réseau--cidr)
-5. [Mécanique du masque (opération AND)](#5-mécanique-du-masque--opération-and)
-6. [Table CIDR complète](#6-table-cidr-complète)
-7. [Exemple concret de subnetting](#7-exemple-concret-de-subnetting)
-8. [IPv4 vs IPv6](#8-ipv4-vs-ipv6)
-9. [IP Publique vs IP Privée (RFC 1918)](#9-ip-publique-vs-ip-privée-rfc-1918)
-10. [Adresses spéciales](#10-adresses-spéciales)
-11. [Les classes d'adresses IP](#11-les-classes-dadresses-ip-système-legacy)
-12. [DHCP vs IP Statique](#12-dhcp-vs-ip-statique)
-13. [NAT — Comment Internet fonctionne](#13-nat--comment-internet-fonctionne)
-14. [DNS — Le carnet d'adresses d'Internet](#14-dns--le-carnet-dadresses-dinternet)
-15. [Ports & Services communs](#15-ports--services-communs)
-16. [Commandes essentielles](#16-commandes-essentielles)
+- [🌐 Adressage IP — Guide Complet](#-adressage-ip--guide-complet)
+  - [📋 Table des matières](#-table-des-matières)
+  - [1. Qu'est-ce qu'une adresse IP ?](#1-quest-ce-quune-adresse-ip-)
+  - [2. Structure d'une adresse IPv4](#2-structure-dune-adresse-ipv4)
+  - [3. Représentation binaire complète](#3-représentation-binaire-complète)
+  - [4. Masque de sous-réseau \& CIDR](#4-masque-de-sous-réseau--cidr)
+    - [Notation CIDR](#notation-cidr)
+  - [5. Mécanique du masque — Opération AND](#5-mécanique-du-masque--opération-and)
+  - [6. Table CIDR complète](#6-table-cidr-complète)
+  - [7. Exemple concret de Subnetting](#7-exemple-concret-de-subnetting)
+  - [8. IPv4 vs IPv6](#8-ipv4-vs-ipv6)
+  - [9. IP Publique vs IP Privée (RFC 1918)](#9-ip-publique-vs-ip-privée-rfc-1918)
+    - [Plages privées (RFC 1918) — non routables sur Internet](#plages-privées-rfc-1918--non-routables-sur-internet)
+    - [IP Publique](#ip-publique)
+  - [10. Adresses spéciales](#10-adresses-spéciales)
+  - [11. Les classes d'adresses IP (Système Legacy)](#11-les-classes-dadresses-ip-système-legacy)
+  - [12. DHCP vs IP Statique](#12-dhcp-vs-ip-statique)
+  - [13. NAT — Comment Internet fonctionne](#13-nat--comment-internet-fonctionne)
+  - [14. DNS — Le carnet d'adresses d'Internet](#14-dns--le-carnet-dadresses-dinternet)
+    - [DNS populaires](#dns-populaires)
+  - [15. Ports \& Services communs](#15-ports--services-communs)
+  - [16. Commandes essentielles](#16-commandes-essentielles)
+    - [🪟 Windows](#-windows)
+    - [🐧 Linux / macOS](#-linux--macos)
+  - [🏁 Résumé — Les essentiels](#-résumé--les-essentiels)
 
 ---
 
