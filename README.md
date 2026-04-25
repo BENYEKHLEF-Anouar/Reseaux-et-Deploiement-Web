@@ -2,9 +2,9 @@
 
 ## Présentation de la session - Réseaux et Déploiement Web  
 
-**Projet :** [Fin C6] Réseaux et Déploiement Web  
-**Apprenant :** BEN YEKHLEF ANOUAR
-**Encadrant :** M. ESSARRAJ Fouad 
+**Projet :** [Fin C6] Réseaux et Déploiement Web  <br> 
+**Apprenant :** BEN YEKHLEF ANOUAR <br>
+**Encadrant :** M. ESSARRAJ Fouad <br>
 
 ---
 
