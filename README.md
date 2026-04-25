@@ -4,7 +4,7 @@
 
 **Projet :** [Fin C6] Réseaux et Déploiement Web  
 **Apprenant :** BEN YEKHLEF ANOUAR
-**Encadrant :** ESSARRAJ Fouad 
+**Encadrant :** M. ESSARRAJ Fouad 
 
 ---
 
@@ -13,12 +13,13 @@
 - **1 - Tutoriel : Ubuntu**
 - **1 - Tutoriel : LAN & équipements**
 - **1 - Flyer (Communication)**
+- **1 - Tutoriel : Adressage IP**
 
 ---
 
 ### 2. Les tâches en cours
 
-- **1 - Tutoriel : Adressage IP**
+
 
 ---
 
