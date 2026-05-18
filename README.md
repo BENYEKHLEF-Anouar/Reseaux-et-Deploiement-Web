@@ -2,9 +2,9 @@
 
 ## Présentation de la session - Réseaux et Déploiement Web  
 
-**Projet :** [Fin C6] Réseaux et Déploiement Web  
-**Apprenant :** BEN YEKHLEF ANOUAR
-**Encadrant :** ESSARRAJ Fouad 
+**Projet :** [Fin C6] Réseaux et Déploiement Web  <br> 
+**Apprenant :** BEN YEKHLEF ANOUAR <br>
+**Encadrant :** M. ESSARRAJ Fouad <br>
 
 ---
 
@@ -13,12 +13,13 @@
 - **1 - Tutoriel : Ubuntu**
 - **1 - Tutoriel : LAN & équipements**
 - **1 - Flyer (Communication)**
+- **1 - Tutoriel : Adressage IP**
 
 ---
 
 ### 2. Les tâches en cours
 
-- **1 - Tutoriel : Adressage IP**
+
 
 ---
 
