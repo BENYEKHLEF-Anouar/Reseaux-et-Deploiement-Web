@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Your Project on GitHub Pages</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            border: 12px solid #6B21A8;
+        }
+
+        /* Grid background */
+        .presentation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 60px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* Logo */
+        .logo {
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #1a1a1a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 3px;
+            background: #1a1a1a;
+            transform: rotate(45deg);
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 16px;
+            background: #1a1a1a;
+            transform: rotate(45deg);
+        }
+
+        .logo-text {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* Main content area */
+        .slide-content {
+            margin-top: 140px;
+            margin-left: 180px;
+            max-width: 700px;
+            z-index: 1;
+        }
+
+        .slide-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #6B21A8;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 30px;
+            letter-spacing: -0.02em;
+        }
+
+        h1 .amp {
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            letter-spacing: -0.02em;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #6B21A8;
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
+
+        .underline {
+            width: 80px;
+            height: 4px;
+            background: #1a1a1a;
+            margin-bottom: 30px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #4a4a4a;
+            margin-bottom: 16px;
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            gap: 12px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .tag-number {
+            width: 28px;
+            height: 28px;
+            background: #6B21A8;
+            color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .tag-text {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #4a4a4a;
+            margin-bottom: 12px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 8px;
+            height: 8px;
+            background: #6B21A8;
+            border-radius: 2px;
+        }
+
+        /* Code block */
+        .code-block {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 24px 28px;
+            font-family: 'Consolas', 'Monaco', 'SF Mono', monospace;
+            font-size: 0.95rem;
+            color: #e0e0e0;
+            margin: 24px 0;
+            line-height: 1.8;
+        }
+
+        .code-block .command {
+            color: #a78bfa;
+        }
+
+        .code-block .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        /* Cards grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 28px;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: #6B21A8;
+            box-shadow: 0 4px 20px rgba(107, 33, 168, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .card-number {
+            width: 36px;
+            height: 36px;
+            background: #6B21A8;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .card h4 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        /* Navigation */
+        .nav-bottom {
+            position: fixed;
+            bottom: 30px;
+            right: 50px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .page-indicator {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .page-indicator .current {
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .nav-arrow {
+            width: 44px;
+            height: 44px;
+            border: 2px solid #1a1a1a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .nav-arrow:hover {
+            background: #1a1a1a;
+        }
+
+        .nav-arrow:hover svg {
+            stroke: white;
+        }
+
+        .nav-arrow svg {
+            width: 20px;
+            height: 20px;
+            stroke: #1a1a1a;
+            stroke-width: 2;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Special layouts */
+        .center-content {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .center-content .underline {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .large-title {
+            font-size: 5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span class="logo-text">SOLICODE</span>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="slide-content">
+                <div class="slide-label">SOLICODE</div>
+                <h1>HOSTING<br><span class="amp">&</span> GITHUB<br>PAGES</h1>
+                <div class="underline"></div>
+                <p>Apprenez à déployer vos projets web gratuitement<br>avec GitHub Pages. Sans serveur, sans frais.</p>
+                <div class="tags">
+                    <div class="tag"><span class="tag-number">1</span><span class="tag-text">Setup</span></div>
+                    <div class="tag"><span class="tag-number">2</span><span class="tag-text">Deploy</span></div>
+                    <div class="tag"><span class="tag-number">3</span><span class="tag-text">Share</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: What is GitHub Pages -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="slide-label">QU'EST-CE QUE C'EST</div>
+                <h2>GitHub Pages</h2>
+                <div class="underline"></div>
+                <p>Un service d'hébergement gratuit qui permet de publier des sites web directement depuis un dépôt GitHub.</p>
+                <ul>
+                    <li>Hébergement statique 100% gratuit</li>
+                    <li>Déploiement automatique à chaque push</li>
+                    <li>Support des domaines personnalisés</li>
+                    <li>HTTPS inclus par défaut</li>
+                    <li>Idéal pour portfolios et documentations</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Prerequisites -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="slide-label">PRÉREQUIS</div>
+                <h2>Avant de Commencer</h2>
+                <div class="underline"></div>
+                <ul>
+                    <li>Un compte GitHub (gratuit)</li>
+                    <li>Un projet avec un fichier index.html</li>
+                    <li>Git installé (optionnel, pour la ligne de commande)</li>
+                    <li>Connaissances de base en HTML/CSS</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 4: Step 1 - Create Repository -->
+        <div class="slide">
+            <div class="slide-content" style="max-width: 800px;">
+                <div class="slide-label">ÉTAPE 1</div>
+                <h2>Créer un Dépôt</h2>
+                <div class="underline"></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">1</div>
+                            <h4>Connexion</h4>
+                        </div>
+                        <p>Allez sur github.com et connectez-vous à votre compte</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">2</div>
+                            <h4>Nouveau dépôt</h4>
+                        </div>
+                        <p>Cliquez sur le bouton "+" puis "New repository"</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">3</div>
+                            <h4>Nommer</h4>
+                        </div>
+                        <p>Donnez un nom significatif à votre projet</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">4</div>
+                            <h4>Créer</h4>
+                        </div>
+                        <p>Cliquez sur "Create repository" pour continuer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Step 2 - Upload Files -->
+        <div class="slide">
+            <div class="slide-content" style="max-width: 800px; margin-top: 100px;">
+                <div class="slide-label">ÉTAPE 2</div>
+                <h2>Ajouter les Fichiers</h2>
+                <div class="underline"></div>
+                <h3>Option A: Navigateur</h3>
+                <ul>
+                    <li>Cliquez sur "uploading an existing file"</li>
+                    <li>Glissez-déposez vos fichiers</li>
+                    <li>Validez avec "Commit changes"</li>
+                </ul>
+                <!-- <h3>Option B: Ligne de commande</h3>
+                <div class="code-block">
+                    <span class="command">git</span> init<br>
+                    <span class="command">git</span> add .<br>
+                    <span class="command">git</span> commit -m "Initial commit"<br>
+                    <span class="command">git</span> remote add origin https://github.com/user/repo.git<br>
+                    <span class="command">git</span> push -u origin main
+                </div> -->
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content" style="max-width: 800px; margin-top: 100px;">
+                <div class="slide-label">ÉTAPE 2</div>
+                <h3>Option B: Ligne de commande</h3>
+                <div class="code-block">
+                    <span class="command">git</span> init<br>
+                    <span class="command">git</span> add .<br>
+                    <span class="command">git</span> commit -m "Initial commit"<br>
+                    <span class="command">git</span> remote add origin https://github.com/user/repo.git<br>
+                    <span class="command">git</span> push -u origin main
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Step 3 - Enable GitHub Pages -->
+        <div class="slide">
+            <div class="slide-content" style="max-width: 800px;">
+                <div class="slide-label">ÉTAPE 3</div>
+                <h2>Activer GitHub Pages</h2>
+                <div class="underline"></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">1</div>
+                            <h4>Paramètres</h4>
+                        </div>
+                        <p>Cliquez sur l'onglet "Settings" du dépôt</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">2</div>
+                            <h4>Pages</h4>
+                        </div>
+                        <p>Dans le menu latéral, sélectionnez "Pages"</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">3</div>
+                            <h4>Source</h4>
+                        </div>
+                        <p>Sous "Build and deployment", choisissez "Deploy from a branch"</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">4</div>
+                            <h4>Branche</h4>
+                        </div>
+                        <p>Sélectionnez "main" et "/ (root)", puis sauvegardez</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Your Site is Live -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="slide-label">RÉSULTAT</div>
+                <h2>Votre Site est En Ligne</h2>
+                <div class="underline"></div>
+                <p>Après activation, votre site est accessible à cette adresse :</p>
+                <div class="code-block">
+                    https://<span class="highlight">username</span>.github.io/<span class="highlight">repository-name</span>
+                </div>
+                <ul>
+                    <li>Attendez 1-2 minutes pour la mise en ligne</li>
+                    <li>Vérifiez la progression dans l'onglet "Actions"</li>
+                    <li>Chaque push redéploie automatiquement</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 8: Tips & Best Practices -->
+        <div class="slide">
+            <div class="slide-content" style="max-width: 800px;">
+                <div class="slide-label">ASTUCES</div>
+                <h2>Bonnes Pratiques</h2>
+                <div class="underline"></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon">🌐</div>
+                        <h4>Domaine Perso</h4>
+                        <p>Ajoutez un fichier CNAME avec votre domaine</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">📱</div>
+                        <h4>Responsive</h4>
+                        <p>Assurez-vous que votre site s'adapte à tous les écrans</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🔒</div>
+                        <h4>HTTPS Gratuit</h4>
+                        <p>Certificat SSL automatique et gratuit</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">⚡</div>
+                        <h4>Jekyll</h4>
+                        <p>Utilisez Jekyll pour des sites statiques avancés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Summary -->
+        <div class="slide">
+            <div class="slide-content" style="max-width: 800px;">
+                <div class="slide-label">RÉCAPITULATIF</div>
+                <h2>En Résumé</h2>
+                <div class="underline"></div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">1</div>
+                            <h4>Créer</h4>
+                        </div>
+                        <p>Créez un nouveau dépôt sur GitHub</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">2</div>
+                            <h4>Uploader</h4>
+                        </div>
+                        <p>Ajoutez vos fichiers HTML/CSS/JS</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">3</div>
+                            <h4>Activer</h4>
+                        </div>
+                        <p>Configurez GitHub Pages dans les paramètres</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-number">4</div>
+                            <h4>Partager</h4>
+                        </div>
+                        <p>Votre site est en ligne et partageable</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Thank You -->
+        <div class="slide">
+            <div class="slide-content center-content">
+                <h1 class="large-title">Merci !</h1>
+                <div class="underline"></div>
+                <p style="font-size: 1.3rem; margin-top: 30px;">Des questions ?</p>
+                <div class="tags" style="justify-content: center; margin-top: 40px;">
+                    <div class="tag"><span class="tag-number">📚</span><span class="tag-text">docs.github.com/pages</span></div>
+                    <div class="tag"><span class="tag-number">💻</span><span class="tag-text">github.com</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-bottom">
+        <div class="page-indicator">
+            Page <span class="current" id="current">01</span> / <span id="total">10</span>
+        </div>
+        <div class="nav-arrows">
+            <div class="nav-arrow" onclick="prevSlide()">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </div>
+            <div class="nav-arrow" onclick="nextSlide()">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total').textContent = totalSlides.toString().padStart(2, '0');
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current').textContent = (currentSlide + 1).toString().padStart(2, '0');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchStartX - touchEndX > 50) nextSlide();
+            if (touchEndX - touchStartX > 50) prevSlide();
+        }
+    </script>
+</body>
+</html>
